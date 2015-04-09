@@ -71,6 +71,8 @@ class Plugin_Dependencies {
 	private static $deactivate_conflicting;
 	private static $deactivated_on_sites;
 
+    public static $repository_uris;//jjr hold where we think we'll find the plugin
+
 	public static function init( $force = false ) {
 		if ( ( isset( self::$dependencies ) && isset( self::$provides ) ) && false === $force ) {
 			return;
@@ -87,6 +89,7 @@ class Plugin_Dependencies {
 			$plugins_by_name[ $plugin_data['Name'] ] = $plugin;
 		}
 
+        static::$repository_uris = array();//jjr
 		foreach ( $all_plugins as $plugin => $plugin_data ) {
 			self::$provides[ $plugin ] = array();
 			if ( ! empty( $plugin_data['Provides'] ) ) {
@@ -98,6 +101,18 @@ class Plugin_Dependencies {
 
 			if ( ! empty( $plugin_data['Depends'] ) ) {
 				foreach ( self::parse_field( $plugin_data['Depends'] ) as $dep ) {
+                    // track name and/or repository uri
+                    $arrNameSource = explode('=>',$dep); // jjr
+                    $dep = trim($arrNameSource[0]); // jjr nix
+                    #print "<br> Depending for ...: ".$plugin_data['Name'];
+                    if (isset($arrNameSource[1])) {
+                        static::$repository_uris[$dep] = trim($arrNameSource[1]);
+//                        print __FILE__.__LINE__."<br><pre>";
+//                        print_r(static::$repository_uris);
+//                        print "</pre>";
+                    } else {
+                    }
+
 					if ( isset( $plugins_by_name[ $dep ] ) ) {
 						$dep = $plugins_by_name[ $dep ];
 					}
@@ -108,6 +123,10 @@ class Plugin_Dependencies {
 
 			self::$dependencies[ $plugin ] = $deps;
 		}
+//        print __FILE__.__LINE__."<br><pre>";
+//        print_r(static::$repository_uris);
+//        print "</pre>";
+
 	}
 
 	private static function parse_field( $str ) {
@@ -753,7 +772,22 @@ class Plugin_Dependencies_UI {
 
 			if ( empty( $plugin_ids ) ) {
 				$name = html( 'span', esc_html( $dep ) );
+                if (isset(Plugin_Dependencies::$repository_uris[$dep])) {
+                    $url = Plugin_Dependencies::$repository_uris[$dep];
+                    if (false !== strstr(strtolower($url),'github.com')) {
+                        $web_name = 'GitHub Web ';
+                    } else  if (false !== strstr(strtolower($url),'bitbucket.org')) {
+                        $web_name = 'BitBucket Web';
 			} else {
+                        $web_name = 'Web';
+                    }
+                    $name .=' [ '.html( 'a', array( 'href' => $url, 'title' => 'Url of Repository' ,'target'=>'_BLANK'), $web_name). ' ]';
+//                    if ($class == 'unsatisfied') {
+//                        $url = 'options-general.php?page=github-updater&tab=github_updater_install_plugin';
+//                        $name .=' [ '.html( 'a', array( 'href' => $url, 'title' => 'Visit GitHub Updater plugin for a quick install' ), __('GitHub Updater but copy Web URL first') ). ' ]';
+//                    }
+                }
+            } else {
 				$list = array();
 				foreach ( $plugin_ids as $plugin_id ) {
 					if ( isset( $all_plugins[ $plugin_id ]['Name'] ) ) {
@@ -787,11 +821,17 @@ class Plugin_Dependencies_UI {
 					}
 
 					if ( false !== $url ) {
-						$list[] = html( 'a', array( 'href' => $url, 'title' => $title ), $name );
+                        $item  = html( 'a', array( 'href' => $url, 'title' => $title ), $name );
 					}
 					else {
-						$list[] = html( 'span', array( 'title' => $title ), $name );
+                        $item  = html( 'span', array( 'title' => $title ), $name );
 					}
+
+                    if (isset(Plugin_Dependencies::$repository_uris[$name])) {
+                        $url = Plugin_Dependencies::$repository_uris[$name];
+                        $item .=' [ '.html( 'a', array( 'href' => $url, 'title' => 'Url of Repository' ,'target'=>'_BLANK'), __('Web') ). ' ]';
+                    }
+                    $list[] = $item;
 				}
 				$name = implode( ' or ', $list );
 			}

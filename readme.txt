@@ -32,6 +32,17 @@ What this does:
 >
 > Unfortunately, very few plugins currently contain dependency information. If you'd like to enhance the information available to this plugin, you might want to install the [Known Plugin Dependencies](https://wordpress.org/plugins/known-plugin-dependencies/) plugin which acts as an add-on to this one.
 
+-- Repository Hints --
+You may optionally specify where you think an admin might find said plugin.  This is especially helpful when dealing
+with plugins that aren't from wordpress.org, such as a custom plugin you are making, a premium plugin you purchase from a vendor, or a github or bitbucket hosted plugin.
+
+<pre lang="php">
+/*
+Depends: -ET-AppChase => https://bitbucket.org/jjrohrer/et-appchase ,
+*/
+</pre>
+The '*=>*' separates the plugin name from the repository.  The main limitation here is that plugins can come from more than one location, so the source is not definitive.
+
 **Development of this plugin is done [on GitHub](https://github.com/xwp/wp-plugin-dependencies). Pull requests welcome. Please see [issues](https://github.com/xwp/wp-plugin-dependencies/issues) reported there before going to the plugin forum.**
 
 == Frequently Asked Questions ==
