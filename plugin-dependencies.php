@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: Plugin Dependencies
-Version: 1.3
+Version: 1.4
 Description: Prevent activating plugins that don't have all their dependencies satisfied
 Author: scribu
 Author URI: http://scribu.net/
 Plugin URI: http://scribu.net/wordpress/plugin-dependencies
+GitHub Plugin URI: https://github.com/jjrohrer/wp-plugin-dependencies/tree/jAppChase
 Text Domain: plugin-dependencies
 Domain Path: /lang
 */
