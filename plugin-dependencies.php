@@ -871,7 +871,7 @@ class Plugin_Dependencies_UI {
                         if (false !== strstr(strtolower($url), 'bitbucket.org')) {
                             $web_name = 'BitBucket Web';
                         } else {
-                            $web_name = 'Web';
+                            $web_name = 'Web ';
                         }
                     }
                     $name .= ' [ ' . html('a', array('href' => $url, 'title' => 'Url of Repository', 'target' => '_BLANK'), $web_name) . ' ]';
@@ -917,9 +917,18 @@ class Plugin_Dependencies_UI {
                         $item = html('span', array('title' => $title), $name);
                     }
 
-                    if (isset(Plugin_Dependencies::$repository_uris[$name])) {
+                    if (isset(Plugin_Dependencies::$repository_uris[$name])) { // yikes - crazy redundant w/ above
                         $url = Plugin_Dependencies::$repository_uris[$name];
-                        $item .= ' [ ' . html('a', array('href' => $url, 'title' => 'Url of Repository', 'target' => '_BLANK'), __('Web')) . ' ]';
+                        if (false !== strstr(strtolower($url), 'github.com')) {
+                            $web_name = 'GitHub Web ';
+                        } else {
+                            if (false !== strstr(strtolower($url), 'bitbucket.org')) {
+                                $web_name = 'BitBucket Web';
+                            } else {
+                                $web_name = 'Web 2';
+                            }
+                        }
+                        $item .= ' [ ' . html('a', array('href' => $url, 'title' => 'Url of Repository', 'target' => '_BLANK'), $web_name) . ' ]';
                     }
                     $list[] = $item;
                 }
