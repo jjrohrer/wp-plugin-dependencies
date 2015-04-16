@@ -951,8 +951,10 @@ class Plugin_Dependencies_UI {
 //        print __FILE__.__LINE__."<BR> ($name) <pre>";
 //        print_r(Plugin_Dependencies::$plugin_dependants);
 //        print "</pre>";
+//        $htmlDependants = '';
 
-        return html('ul', array('class' => 'dep-list'), $dep_list) . $htmlDependants;
+        //return html('ul', array('class' => 'dep-list'), $dep_list) . $htmlDependants;
+        return html('ul', array('class' => 'dep-list'), $dep_list) ;
     }
 }
 
